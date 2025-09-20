@@ -33,8 +33,8 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.button2 = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnStart = new System.Windows.Forms.Button();
             this.txtRequest = new FastColoredTextBoxNS.FastColoredTextBox();
+            this.btnStart = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtRequest)).BeginInit();
@@ -86,18 +86,6 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(584, 681);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
-            // btnStart
-            // 
-            this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStart.Font = new System.Drawing.Font("Cascadia Code", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Location = new System.Drawing.Point(3, 684);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(578, 34);
-            this.btnStart.TabIndex = 1;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
             // txtRequest
             // 
             this.txtRequest.AutoCompleteBracketsList = new char[] {
@@ -111,25 +99,44 @@
         '\"',
         '\'',
         '\''};
+            this.txtRequest.AutoIndentCharsPatterns = "\r\n^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;]+);\r\n^\\s*(case|default)\\s*[^:]" +
+    "*(?<range>:)\\s*(?<range>[^;]+);\r\n";
             this.txtRequest.AutoScrollMinSize = new System.Drawing.Size(2, 15);
             this.txtRequest.BackBrush = null;
+            this.txtRequest.BracketsHighlightStrategy = FastColoredTextBoxNS.BracketsHighlightStrategy.Strategy2;
             this.txtRequest.CharHeight = 15;
             this.txtRequest.CharWidth = 7;
             this.txtRequest.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtRequest.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.txtRequest.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRequest.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRequest.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.txtRequest.IsReplaceMode = false;
             this.txtRequest.Language = FastColoredTextBoxNS.Language.CSharp;
+            this.txtRequest.LeftBracket = '(';
+            this.txtRequest.LeftBracket2 = '{';
             this.txtRequest.Location = new System.Drawing.Point(3, 3);
             this.txtRequest.Name = "txtRequest";
             this.txtRequest.Paddings = new System.Windows.Forms.Padding(0);
+            this.txtRequest.RightBracket = ')';
+            this.txtRequest.RightBracket2 = '}';
             this.txtRequest.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtRequest.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txtRequest.ServiceColors")));
             this.txtRequest.ShowLineNumbers = false;
             this.txtRequest.Size = new System.Drawing.Size(578, 675);
             this.txtRequest.TabIndex = 0;
             this.txtRequest.Zoom = 100;
+            // 
+            // btnStart
+            // 
+            this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnStart.Font = new System.Drawing.Font("Cascadia Code", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStart.Location = new System.Drawing.Point(3, 684);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(578, 34);
+            this.btnStart.TabIndex = 1;
+            this.btnStart.Text = "Start V1";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // Form1
             // 

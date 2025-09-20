@@ -27,8 +27,8 @@ namespace ExportData
 {
     public partial class Form1 : Form
     {
-        private const string GitHubOwner = "your-github-username"; // thay bằng của bạn
-        private const string GitHubRepo = "your-repo-name";        // thay bằng repo của bạn
+        private const string GitHubOwner = "BeoNguyen1601"; // thay bằng của bạn
+        private const string GitHubRepo = "ExportReportData";        // thay bằng repo của bạn
         private const string GitHubApiUrl = "https://api.github.com/repos/" + GitHubOwner + "/" + GitHubRepo + "/releases/latest";
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -49,7 +49,7 @@ namespace ExportData
             {
                 using (var client = new HttpClient())
                 {
-                    client.DefaultRequestHeaders.Add("User-Agent", "WinFormsApp"); // GitHub bắt buộc
+                    client.DefaultRequestHeaders.Add("User-Agent", "AppExportData"); // GitHub bắt buộc
 
                     var json = await client.GetStringAsync(GitHubApiUrl);
                     var release = JObject.Parse(json);
