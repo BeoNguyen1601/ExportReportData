@@ -49,6 +49,7 @@ namespace ExportData
             {
                 using (var client = new HttpClient())
                 {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("token", "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");
                     client.DefaultRequestHeaders.Add("User-Agent", "AppExportData"); // GitHub bắt buộc
 
                     var json = await client.GetStringAsync(GitHubApiUrl);
