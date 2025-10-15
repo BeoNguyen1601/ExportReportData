@@ -28,6 +28,7 @@ namespace ExportData
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Font = new Font("Cascadia Code", 10F, FontStyle.Regular);
+            this.Width = 660;
             _propertyNames = propertyNames;
             GenerateDynamicControls();
         }
@@ -41,9 +42,11 @@ namespace ExportData
             {
                 string[] propText = prop.Key.Split('_');
 
+                var val = !string.IsNullOrEmpty(prop.Value) ? prop.Value : propText[1];
+
                 var panel = new Panel();
-                panel.Width = flpContainer.ClientSize.Width - 35;
-                panel.Height = 32;
+                panel.Width = flpContainer.ClientSize.Width - 30;
+                panel.Height = 34;
                 panel.Margin = new Padding(3);
                 panel.BackColor = Color.WhiteSmoke;
                 panel.AllowDrop = true;
@@ -58,7 +61,7 @@ namespace ExportData
                 lbl.AutoSize = false;
                 lbl.Location = new Point(5, 5);
                 lbl.Width = 195;
-                lbl.AutoEllipsis = true;        // thêm "..." nếu quá dài
+                lbl.AutoEllipsis = true; // thêm "..." nếu quá dài
                 lbl.TabStop = false;
 
                 // TextBox
@@ -68,26 +71,26 @@ namespace ExportData
                 txt.Location = new Point(200, 3);
                 txt.Text = !string.IsNullOrEmpty(prop.Value) ? prop.Value : string.Empty;
                 txt.TabIndex = index++;
-                txt.Text = VietnameseHumanizer.Convert(propText[1]);
+                txt.Text = VietnameseHumanizer.Convert(val);
 
                 var grpAlign = new GroupBox();
                 grpAlign.Text = "";
-                grpAlign.Width = 75;
+                grpAlign.Width = 65;
                 grpAlign.Height = 30;
-                grpAlign.Location = new Point(panel.Width - 75, -3);
+                grpAlign.Location = new Point(panel.Width - 115, -3);
                 grpAlign.TabStop = false;
 
                 var rbLeft = new RadioButton();
                 rbLeft.Width = 15;
                 rbLeft.Height = 15;
-                rbLeft.Location = new Point(5, 10);
+                rbLeft.Location = new Point(5, 11);
                 rbLeft.Tag = "Left";
                 rbLeft.TabStop = false;
 
                 var rbCenter = new RadioButton();
                 rbCenter.Width = 15;
                 rbCenter.Height = 15;
-                rbCenter.Location = new Point(30, 10);
+                rbCenter.Location = new Point(25, 11);
                 rbCenter.Checked = true;
                 rbCenter.Tag = "Center";
                 rbCenter.TabStop = false;
@@ -95,7 +98,7 @@ namespace ExportData
                 var rbRight = new RadioButton();
                 rbRight.Width = 15;
                 rbRight.Height = 15;
-                rbRight.Location = new Point(55, 10);
+                rbRight.Location = new Point(45, 11);
                 rbRight.Tag = "Right";
                 rbRight.TabStop = false;
 
@@ -109,20 +112,31 @@ namespace ExportData
                 btnDrag.Width = 30;
                 btnDrag.Height = 24;
                 btnDrag.TextAlign = ContentAlignment.MiddleCenter;
-                btnDrag.Location = new Point(panel.Width - 110, 3);
+                btnDrag.Location = new Point(panel.Width - 150, 3);
                 btnDrag.Tag = panel;
                 btnDrag.MouseDown += BtnDrag_MouseDown;
                 btnDrag.TabStop = false;
+
+                // Button xóa
+                var btnDelete = new Button();
+                btnDelete.Text = "✖";
+                btnDelete.Width = 30;
+                btnDelete.Height = 24;
+                btnDelete.TextAlign = ContentAlignment.MiddleCenter;
+                btnDelete.Location = new Point(panel.Width - 45, 3);
+                btnDelete.Tag = prop.Key;
+                btnDelete.Click += BtnDelete_Click;
+                btnDelete.TabStop = false;
 
                 // Add Controls
                 panel.Controls.Add(lbl);
                 panel.Controls.Add(txt);
                 panel.Controls.Add(grpAlign);
                 panel.Controls.Add(btnDrag);
+                panel.Controls.Add(btnDelete);
 
                 flpContainer.Controls.Add(panel);
             }
-
 
             var btnSave = new Button();
             btnSave.Text = "Lưu";
@@ -273,6 +287,27 @@ namespace ExportData
 
             flpContainer.Controls.SetChildIndex(source, targetIndex);
             flpContainer.Invalidate();
+        }
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn == null) return;
+            var propKey = btn.Tag as string;
+            if (string.IsNullOrEmpty(propKey)) return;
+
+            // Remove from _propertyNames
+            if (_propertyNames.ContainsKey(propKey))
+            {
+                _propertyNames.Remove(propKey);
+            }
+
+            // Remove the panel from the UI
+            var panel = btn.Parent as Panel;
+            if (panel != null)
+            {
+                flpContainer.Controls.Remove(panel);
+                panel.Dispose();
+            }
         }
         private void ExportExcel(Dictionary<string, HeaderMappingInfo> headerMapping, string title, string key)
         {
