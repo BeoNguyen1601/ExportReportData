@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using ExportData.DTOs;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
@@ -19,6 +20,9 @@ namespace ExportData
 {
     public partial class GenClass : Form
     {
+        // Thêm một dictionary để cache code đã format
+        private readonly Dictionary<TreeNode, string> _formattedCodeCache = new Dictionary<TreeNode, string>();
+
         public GenClass()
         {
             string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GenerateSuccess");
@@ -38,7 +42,6 @@ namespace ExportData
 
             LoadSubDirectories(rootDir, rootNode);
         }
-
         private void LoadSubDirectories(DirectoryInfo dir, TreeNode node)
         {
             // Thêm thư mục con
@@ -57,35 +60,6 @@ namespace ExportData
             }
         }
 
-        private string PreFixBrokenProperties(string code)
-        {
-            // Thêm xuống dòng trước mỗi "public " nếu nó dính vào nhau
-            return System.Text.RegularExpressions.Regex.Replace(
-                code,
-                @"(= string\.Empty\s*)(public\s+)",
-                "$1;\n$2"
-            );
-        }
-
-        private string FormatCSharp(string code)
-        {
-            try
-            {
-                // Parse code thành SyntaxTree
-                var tree = CSharpSyntaxTree.ParseText(code);
-                var root = tree.GetRoot();
-
-                // NormalizeWhitespace() sẽ format lại
-                var formatted = root.NormalizeWhitespace();
-
-                return formatted.ToFullString();
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-        }
-
         #endregion
 
         private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
@@ -94,10 +68,10 @@ namespace ExportData
             if (File.Exists(path) && Path.GetExtension(path) == ".cs")
             {
                 string codeText = File.ReadAllText(path);
-                codeText = PreFixBrokenProperties(codeText);
-                txtResponse.Text = FormatCSharp(codeText);
+                txtResponse.Text = codeText;
             }
         }
+
         private void btnHeaderSetting_Click(object sender, EventArgs e)
         {
             string text = txtResponse.Text;

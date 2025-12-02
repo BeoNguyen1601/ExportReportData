@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ASC.SCORE.APPLICATION.Services
+{
+    public interface IReportService
+    {
+        Task<HT_BieuMauInfoViewModel> ExportReport{methodName}Async(GetListParam request);
+    }
+
+    [TransientDependency(ServiceType = typeof(IReportService))]
+    public class ReportService : BaseService, IReportService
+    {
+        public ReportService(IMapper mapper, IExportService exportService, IDistributedCache distributedCache, IHttpContextAccessor httpContextAccessor) : base(mapper, exportService, distributedCache, httpContextAccessor)
+        {
+            
+        }
+
+        /****************************/
+        /* ---Export bình thường--- */
+        /****************************/
+        public async Task<HT_BieuMauInfoViewModel> ReportExcel{methodName}Async(GetListParam param)
+        {
+            string maBieuMau = BieuMauConstants.BM_;
+
+            Dictionary<string, string> dicReplace = new Dictionary<string, string>();
+            var dataPrint = await _queries.GetDataListAsync(param).ConfigureAwait(false);
+
+            if (!dataPrint.Result.Items.Any())
+                CommonBase.ShowErrorMessage(EDM_BieuMauErrorCode.DM_BIEUMAU_KHONGCODULIEU);
+
+            var dataReport = dataPrint.Result.Items.ToList().MapToExportViewModel<ClassData, ClassExport>();
+            var infoBieuMau = new HT_BieuMauInfoRequest()
+            {
+                DicReplace = dicReplace,
+                MaBieuMau = maBieuMau,
+                IsFormatExcel = false, // Nếu không tắt cờ này, excel sẽ tự format (autofit col và row)
+                TypeExport = EnumTypeExport.Excel.ParseInt(), // Nếu request có truyền thì gán lại giá trị
+            };
+
+            var result = await ReportExcelAsync(dataReport, infoBieuMau);
+            return result;
+        }
+
+        /****************************/
+        /* ----Export có group----- */
+        /****************************/
+        public async Task<HT_BieuMauInfoViewModel> ReportExcel{methodName}Async(GetListParam param)
+        {
+            string maBieuMau = BieuMauConstants.BM_;
+            var bieuMau = await _bieuMauQueries.GetBieuMauByFilter(new DOMAIN.DTOs.Request.HT_BieuMauFilterRequest { MaBieuMau = maBieuMau });
+
+            var data = await _queries.GetDataListAsync(param);
+            if (data == null || data.Result == null || data.Result.Items == null || !data.Result.Items.Any())
+                CommonBase.ShowErrorMessage(EDM_BieuMauErrorCode.DM_BIEUMAU_KHONGCODULIEU);
+            
+            List<DataTable> dataPrint = new List<DataTable>();
+            Dictionary<string, string> dicReplace = new Dictionary<string, string>();
+            var lstColumnDelete = new List<string>();
+
+            var infoBieuMau = new HT_BieuMauInfoRequest
+            {
+                MaBieuMau = maBieuMau,
+                GroupByFormat = "[{MaSinhVien}] - {HoDem} {Ten}", // Example: [2018601234] - Nguyen Van A (dòng được group)
+                RangeGroupBy = "A7:Z8", // Sử dụng tool export không cần sửa dữ liệu chổ này
+                NameGroupBy = "%GroupThongTinSinhVien", // Key group đặt trên file excel
+                IsGroupRow = true, // Bật cờ này khi export có group
+                IsFormatExcel = false, // Nếu không tắt cờ này, excel sẽ tự format (autofit col và row)
+                TypeExport = EnumTypeExport.Excel.ParseInt(), // Nếu request có truyền thì gán lại giá trị
+            };
+
+            var bieuMauResponse = await ReportExcelGroupAsync(data.Result.Items, infoBieuMau);
+            return bieuMauResponse;
+        }
+        
+        /****************************/
+        /* ---Export multi sheet--- */
+        /****************************/
+        public async Task<HT_BieuMauInfoViewModel> ReportExcel{methodName}Async(GetListParam param)
+        {
+            string maBieuMau = BieuMauConstants.BM_;
+            var bieuMau = await _bieuMauQueries.GetBieuMauByFilter(new DOMAIN.DTOs.Request.HT_BieuMauFilterRequest { MaBieuMau = maBieuMau });
+
+            var data = await _queries.GetDataListAsync(param);
+            if (data == null || data.Result == null || data.Result.Items == null || !data.Result.Items.Any())
+                CommonBase.ShowErrorMessage(EDM_BieuMauErrorCode.DM_BIEUMAU_KHONGCODULIEU);
+            
+            List<DataTable> dataPrint = new List<DataTable>();
+            Dictionary<string, string> dicReplace = new Dictionary<string, string>();
+            var lstColumnDelete = new List<string>();
+
+            var infoBieuMau = new HT_BieuMauInfoRequest
+            {
+                MaBieuMau = maBieuMau,
+                NameSheetGroupBy = "{MaLopHoc}", // Data sẽ group lại theo MaLopHoc và tạo sheet theo field này
+                IsFormatExcel = false, // Nếu không tắt cờ này, excel sẽ tự format (autofit col và row)
+                TypeExport = EnumTypeExport.Excel.ParseInt(), // Nếu request có truyền thì gán lại giá trị
+            };
+
+            var bieuMauResponse = await ReportExcelMultiSheetExAsync(data.Result.Items, infoBieuMau);
+            return bieuMauResponse;
+        }
+    }
+}

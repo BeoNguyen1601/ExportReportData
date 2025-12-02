@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using ExportData.Common;
+using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
 using System;
@@ -223,6 +224,17 @@ namespace ExportData
             if (titleExcel != null && !string.IsNullOrEmpty(titleExcel.Text)) Title = titleExcel.Text.ToUpper();
             if (maBM != null && !string.IsNullOrEmpty(maBM.Text)) MaBieuMau = maBM.Text.ToUpper();
 
+            string appFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExportDataResources");
+            Directory.CreateDirectory(appFolder);
+
+            string sourceFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources/vi.json");
+            string destFile = Path.Combine(appFolder, "vi.json");
+
+            if (!File.Exists(destFile))
+            {
+                File.Copy(sourceFile, destFile);
+            }
+
             foreach (Control ctrl in flpContainer.Controls)
             {
                 var panel = ctrl as Panel;
@@ -230,6 +242,12 @@ namespace ExportData
 
                 var prop = panel.Tag as string;
                 var txtBox = panel.Controls.OfType<TextBox>().FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(prop) && !string.IsNullOrEmpty(txtBox.Text))
+                {
+                    JsonHelper.AddOrIgnore(destFile, prop, txtBox.Text);
+                }
+
 
                 string selectedAlign = "Left"; // Mặc định
                 var grpAlign = panel.Controls.OfType<GroupBox>().FirstOrDefault();

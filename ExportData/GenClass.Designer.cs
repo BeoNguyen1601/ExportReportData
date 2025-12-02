@@ -101,7 +101,7 @@
             this.txtResponse.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtResponse.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.txtResponse.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtResponse.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtResponse.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.txtResponse.IsReplaceMode = false;
             this.txtResponse.Language = FastColoredTextBoxNS.Language.CSharp;
             this.txtResponse.LeftBracket = '(';

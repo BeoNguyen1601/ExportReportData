@@ -1,0 +1,35 @@
+using ASC.SCORE.API.Controllers.v1.BaseClasses;
+using ASC.SCORE.APPLICATION.Services;
+using ASC.SCORE.DOMAIN.DTOs;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Services.Common.MethodResultUtils;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace ASC.SCORE.API.Controllers.v1
+{
+    [ApiController]
+    [Authorize]
+    public class V2_SCORE_Controller : APIControllerBase
+    {
+        private const string ExportDataList = nameof(ExportDataList);
+        private readonly IReportService _queriesBieuMau;
+
+        public V2_SCORE_Controller(IMediator mediator, IReportService queriesBieuMau) : base(mediator)
+        {
+            _queriesBieuMau = queriesBieuMau;
+        }
+
+        [HttpPost]
+        [Route(ExportDataList)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ExportReport{methodName}Async(GetListParam request)
+        {
+            var result = await _queriesBieuMau.ExportReport{methodName}Async(request).ConfigureAwait(false);
+            return File(result.FileContent, result.ContentType, result.TenBieuMau);
+        }
+    }
+}
+

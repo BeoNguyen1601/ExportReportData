@@ -112,33 +112,6 @@ namespace ExportData
 
         #region Private Methods
 
-        private string PreFixBrokenProperties(string code)
-        {
-            // Thêm xuống dòng trước mỗi "public " nếu nó dính vào nhau
-            return System.Text.RegularExpressions.Regex.Replace(
-                code,
-                @"(= string\.Empty\s*)(public\s+)",
-                "$1;\n$2"
-            );
-        }
-        private string FormatCSharp(string code)
-        {
-            try
-            {
-                // Parse code thành SyntaxTree
-                var tree = CSharpSyntaxTree.ParseText(code);
-                var root = tree.GetRoot();
-
-                // NormalizeWhitespace() sẽ format lại
-                var formatted = root.NormalizeWhitespace();
-
-                return formatted.ToFullString();
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-        }
         private void CreateFile(string basePath, string fileName, string classCode)
         {
             // Tạo file .cs
@@ -176,12 +149,10 @@ namespace ExportData
                 return;
             }
 
-            #region Class
-
-
             string[] lstPartClassName = className.Split('_');
+            var exportClassName = lstPartClassName.Last().Replace("Command", "");
 
-            var exportClassName = "Export" + lstPartClassName.Last();
+            #region Class
 
             // Tìm tất cả property
             int startIndex = input.IndexOf('{');
@@ -196,9 +167,7 @@ namespace ExportData
             var lines = classBody.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             var sb = new StringBuilder();
-            sb.AppendLine("public class " + exportClassName);
-            sb.AppendLine("{");
-            sb.AppendLine("public int P_STTExport { get; set; }");
+            sb.AppendLine("        public int P_STTExport { get; set; }");
 
             foreach (var line in lines)
             {
@@ -209,105 +178,47 @@ namespace ExportData
                     string propName = match.Groups[2].Value;
 
                     if (propType == "bool" || propType == "bool?")
-                        sb.AppendLine("[CustomBoolean(\"Có\", \"Không\")]");
-                    sb.AppendLine($"public string P_{propName} {{ get; set; }}");
+                        sb.AppendLine("     [CustomBoolean(\"Có\", \"Không\")]");
+                    sb.AppendLine($"        public string P_{propName} {{ get; set; }}");
                 }
             }
 
-            sb.AppendLine("}");
+            string templateClass = LoadTemplates("TemplatesEntites");
+            string resultClass = sb.ToString().TrimEnd('\r', '\n');
 
-            string codeText = PreFixBrokenProperties(sb.ToString());
-            codeText = FormatCSharp(codeText);
+            string fillClass = templateClass
+                .Replace("{className}", exportClassName)
+                .Replace("{Properties}", resultClass);
 
             string basePath = CreateFolder("Class");
-            CreateFile(basePath, exportClassName, codeText);
-
+            CreateFile(basePath, exportClassName, fillClass);
 
             #endregion
 
             #region Services
 
-            string requestClass = Regex.Replace(className, "Result$", "Request", RegexOptions.IgnoreCase);
+            string templateService = LoadTemplates("TemplatesService");
 
-            string queries = Regex.Replace(className, "^SP_", "I");
-            queries = Regex.Replace(className, "Result$", "Queries", RegexOptions.IgnoreCase);
-
-            string[] queriesPart = queries.Split('_');
-            string propNamePart = queriesPart.Last();
-            string output = "_" + char.ToLower(propNamePart[0]) + propNamePart.Substring(1);
-
-            string nameMethod = Regex.Replace(lstPartClassName.Last(), "Result$", "", RegexOptions.IgnoreCase);
-
-            string nameGetData = Regex.Replace(className, "^SP_", "");
-            nameGetData = Regex.Replace(nameGetData, "Result$", "", RegexOptions.IgnoreCase);
-
-            var sb1 = new StringBuilder();
-            sb1.AppendLine("namespace ASC.EDU.APPLICATION.Services");
-            sb1.AppendLine("{");
-            sb1.AppendLine("public interface IReportService");
-            sb1.AppendLine("{");
-            sb1.AppendLine($"Task<HT_BieuMauInfoViewModel> ReportExcel{nameMethod}Async({requestClass} request);");
-            sb1.AppendLine("}");
-            sb1.AppendLine("[TransientDependency(ServiceType = typeof(IReportService))]");
-            sb1.AppendLine("public class ReportService : BaseService, IReportService");
-            sb1.AppendLine("{");
-            sb1.AppendLine($"private readonly {queries} {output}; \n");
-            sb1.AppendLine($"public async Task<HT_BieuMauInfoViewModel> ReportExcel{nameMethod}Async({requestClass} param)");
-            sb1.AppendLine("{");
-            sb1.AppendLine("string maBieuMau = BieuMauConstants.BM_Excel;");
-            sb1.AppendLine("Dictionary<string, string> dicReplace = new Dictionary<string, string>();");
-            sb1.AppendLine($"var dataPrint = await {output}.{nameGetData}Async(param).ConfigureAwait(false);");
-            sb1.AppendLine("if (!dataPrint.Result.Items.Any()) CommonBase.ShowErrorMessage(EDM_BieuMauErrorCode.DM_BIEUMAU_KHONGCODULIEU);");
-            sb1.AppendLine($"var dataReport = dataPrint.Result.Items.ToList().MapToExportViewModel<{className}, {exportClassName}>();");
-            sb1.AppendLine("var infoBieuMau = new HT_BieuMauInfoRequest()");
-            sb1.AppendLine("{");
-            sb1.AppendLine("DicReplace = dicReplace,");
-            sb1.AppendLine("MaBieuMau = maBieuMau,");
-            sb1.AppendLine("};");
-            sb1.AppendLine("var result = await ReportExcelAsync(dataReport, infoBieuMau);");
-            sb1.AppendLine("return result;");
-            sb1.AppendLine("}");
-            sb1.AppendLine("}");
-            sb1.AppendLine("}");
-
-            string codeText1 = PreFixBrokenProperties(sb1.ToString());
-            codeText1 = FormatCSharp(codeText1);
+            string fillService = templateService
+                .Replace("{methodName}", exportClassName)
+                .Replace("{className}", exportClassName)
+                .Replace("{br}", "\n");
 
             string basePath1 = CreateFolder("Services");
-            CreateFile(basePath1, "ReportService", codeText1);
+            CreateFile(basePath1, "ReportService", fillService);
 
             #endregion
 
             #region Controller
 
-            var sb2 = new StringBuilder();
-            sb2.AppendLine("namespace ASC.EDU.API.Controllers.v1");
-            sb2.AppendLine("{");
-            sb2.AppendLine("\r\n");
-            sb2.AppendLine("\r\n");
-            sb2.AppendLine("[ApiController]");
-            sb2.AppendLine("[Authorize]");
-            sb2.AppendLine($"public class {lstPartClassName.Last()}Controller : APIControllerBase");
-            sb2.AppendLine("{");
-            sb2.AppendLine("private const string ExportDataList = nameof(ExportDataList);");
-            sb2.AppendLine("private readonly IReportService _queriesBieuMau;");
-            sb2.AppendLine(" ");
-            sb2.AppendLine("[HttpPost]");
-            sb2.AppendLine("[Route(ExportDataList)]");
-            sb2.AppendLine("[ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]");
-            sb2.AppendLine($"public async Task<IActionResult> ExportReportExcel{nameMethod}Async({requestClass} request)");
-            sb2.AppendLine("{");
-            sb2.AppendLine($"var result = await _queriesBieuMau.ReportExcel{nameMethod}Async(request).ConfigureAwait(false);");
-            sb2.AppendLine("return File(result.FileContent, result.ContentType, result.TenBieuMau);");
-            sb2.AppendLine("}");
-            sb2.AppendLine("}");
-            sb2.AppendLine("}");
+            string templateController = LoadTemplates("TemplatesController");
 
-            string codeText2 = PreFixBrokenProperties(sb2.ToString());
-            codeText2 = FormatCSharp(codeText2);
+            string filled = templateController
+                .Replace("{className}", "Export" + exportClassName + "ViewModel")
+                .Replace("{methodName}", exportClassName);
 
             string basePath2 = CreateFolder("Controller");
-            CreateFile(basePath2, $"{lstPartClassName.Last()}Controller", codeText2);
+            CreateFile(basePath2, $"{exportClassName}Controller", filled);
 
             #endregion
 
@@ -480,7 +391,17 @@ namespace ExportData
                 }
             }
         }
-
+        private string LoadTemplates(string templates)
+        {
+            string file = string.Empty;
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string path = Path.Combine(baseDir, "Templates", templates + ".txt");
+            if (File.Exists(path))
+            {
+                file = File.ReadAllText(path);
+            }
+            return file;
+        }
 
     }
 }
