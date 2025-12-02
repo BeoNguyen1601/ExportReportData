@@ -80,9 +80,18 @@ namespace ExportData
 
                         if (dr == DialogResult.Yes)
                         {
+                            string tempZip = Path.Combine(Path.GetTempPath(), "update.zip");
+
+                            using (var wc = new WebClient())
+                            {
+                                await wc.DownloadFileTaskAsync(downloadUrl, tempZip);
+                            }
+                            string updaterPath = Path.Combine(Application.StartupPath, "Updater.exe");
+
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = downloadUrl,
+                                FileName = updaterPath,
+                                Arguments = $"\"{tempZip}\" \"{Application.StartupPath}\" \"{Application.ExecutablePath}\"",
                                 UseShellExecute = true
                             });
 
