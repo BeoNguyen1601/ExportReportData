@@ -111,6 +111,8 @@ namespace ExportData
             try
             {
                 InitializeComponent();
+                var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                this.Text = $"Export Excel (v{currentVersion})";
             }
             catch (Exception)
             {
