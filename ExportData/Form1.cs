@@ -80,18 +80,9 @@ namespace ExportData
 
                         if (dr == DialogResult.Yes)
                         {
-                            string tempZip = Path.Combine(Path.GetTempPath(), "update.zip");
-
-                            using (var wc = new WebClient())
-                            {
-                                await wc.DownloadFileTaskAsync(downloadUrl, tempZip);
-                            }
-                            string updaterPath = Path.Combine(Application.StartupPath, "Updater.exe");
-
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = updaterPath,
-                                Arguments = $"\"{tempZip}\" \"{Application.StartupPath}\" \"{Application.ExecutablePath}\"",
+                                FileName = downloadUrl,
                                 UseShellExecute = true
                             });
 
@@ -196,6 +187,12 @@ namespace ExportData
 
             string templateClass = LoadTemplates("TemplatesEntites");
             string resultClass = sb.ToString().TrimEnd('\r', '\n');
+
+            if (string.IsNullOrEmpty(templateClass))
+            {
+                MessageBox.Show("Không tìm thấy template class!");
+                return;
+            }
 
             string fillClass = templateClass
                 .Replace("{className}", exportClassName)
