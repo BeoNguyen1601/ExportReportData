@@ -84,9 +84,9 @@ namespace ExportData
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Lỗi khi kiểm tra cập nhật: " + ex.Message);
+                return;
             }
         }
 
