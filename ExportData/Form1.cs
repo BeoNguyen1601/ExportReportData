@@ -51,93 +51,33 @@ namespace ExportData
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Add("User-Agent", "AppExportData"); // GitHub bắt buộc
-                    string json = string.Empty;
-                    try
-                    {
-                        json = await client.GetStringAsync(GitHubApiUrl);
-                    }
-                    catch (Exception)
-                    {
-                        return;
-                    }
-                    var release = JObject.Parse(json);
 
-                    var latestVersion = release["tag_name"].ToString(); // ví dụ "v1.2.0"
+                    string json = await client.GetStringAsync(GitHubApiUrl);
+
+                    var release = JObject.Parse(json);
+                    var latestVersion = release["tag_name"].ToString();
                     var assets = release["assets"] as JArray;
-                    var downloadUrl = assets != null && assets.Count > 0
-                        ? assets[0]["browser_download_url"].ToString()
-                        : null;
+                    var downloadUrl = assets?[0]?["browser_download_url"]?.ToString();
 
                     var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
                     var newVersion = new Version(latestVersion.TrimStart('v'));
 
                     if (newVersion > currentVersion && !string.IsNullOrEmpty(downloadUrl))
                     {
-                        var dr = MessageBox.Show(
-                            string.Format("Phiên bản hiện tại ({0})\nBạn có muốn tải phiên bản mới ({1}) không?", currentVersion, newVersion),
-                            "Cập nhật",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Information);
-
-                        //if (dr == DialogResult.Yes)
-                        //{
-                        //    Process.Start(new ProcessStartInfo
-                        //    {
-                        //        FileName = downloadUrl,
-                        //        UseShellExecute = true
-                        //    });
-
-                        //    Application.Exit();
-                        //}
-
-                        if (dr != DialogResult.Yes) return;
-
-                        string zipPath = Path.Combine(Path.GetTempPath(), "update.zip");
-                        string extractFolder = Path.Combine(Path.GetTempPath(), "update_extract");
-
-                        // TẢI FILE ZIP
-                        var data = await client.GetByteArrayAsync(downloadUrl);
-                        File.WriteAllBytes(zipPath, data);
-
-                        // GIẢI NÉN VÀO FOLDER TEMP
-                        if (Directory.Exists(extractFolder))
-                            Directory.Delete(extractFolder, true);
-                        ZipFile.ExtractToDirectory(zipPath, extractFolder);
-
-                        string currentExe = Application.ExecutablePath;
-                        string exeName = Path.GetFileName(currentExe);
-                        string appFolder = Path.GetDirectoryName(currentExe);
-                        string oldExe = currentExe + ".oldExport";
-
-                        // ĐỔI TÊN EXE ĐANG CHẠY
-                        if (File.Exists(oldExe))
-                            File.Delete(oldExe);
-
-                        File.Move(currentExe, oldExe);
-
-                        // COPY TẤT CẢ FILE TỪ UPDATE VÀO FOLDER APP
-                        foreach (var file in Directory.GetFiles(extractFolder, "*", SearchOption.AllDirectories))
+                        if (MessageBox.Show($"Phiên bản hiện tại ({currentVersion})\nBạn có muốn cập nhật lên {newVersion} không?", "Cập nhật", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                         {
-                            string relative = file.Substring(extractFolder.Length + 1);
-                            string dest = Path.Combine(appFolder, relative);
+                            string tempZip = Path.Combine(Path.GetTempPath(), "update.zip");
 
-                            Directory.CreateDirectory(Path.GetDirectoryName(dest));
-                            File.Copy(file, dest, true);
+                            using (var stream = await client.GetStreamAsync(downloadUrl))
+                            using (var file = File.Create(tempZip))
+                            {
+                                await stream.CopyToAsync(file);
+                            }
+
+                            string updater = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Updater.exe");
+                            Process.Start(updater, $"\"{tempZip}\" \"{Application.ExecutablePath}\"");
+                            Application.Exit();
                         }
-
-                        // XÓA ZIP VÀ FOLDER TMP
-                        try { File.Delete(zipPath); } catch { }
-                        try { Directory.Delete(extractFolder, true); } catch { }
-
-                        // MỞ LẠI APP SAU KHI UPDATE
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = currentExe,
-                            UseShellExecute = true
-                        });
-
-                        // THOÁT APP CŨ
-                        Application.Exit();
                     }
                 }
             }

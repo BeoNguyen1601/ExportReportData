@@ -3,67 +3,65 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Updater
 {
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            // args[0] = file ZIP tạm
-            // args[1] = thư mục app
-            // args[2] = file exe chính cần chạy lại
-
-            if (args.Length < 3)
+            if (args.Length < 2)
                 return;
 
-            string zipFile = args[0];
-            string targetFolder = args[1];
-            string mainExe = args[2];
+            string zipPath = args[0];
+            string targetExe = args[1];
+            string targetFolder = Path.GetDirectoryName(targetExe);
 
-            // Đợi app chính thoát (file không còn bị khóa)
-            Thread.Sleep(2000);
+            // Đợi ứng dụng chính đóng hoàn toàn
+            Thread.Sleep(1500);
 
             try
             {
-                using (ZipArchive archive = ZipFile.OpenRead(zipFile))
+                using (ZipArchive archive = ZipFile.OpenRead(zipPath))
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        string fullPath = Path.Combine(targetFolder, entry.FullName);
+                        string destinationPath = Path.Combine(targetFolder, entry.FullName);
 
-                        // Là folder
-                        if (entry.FullName.EndsWith("/"))
+                        // Nếu là thư mục
+                        if (string.IsNullOrEmpty(entry.Name))
                         {
-                            Directory.CreateDirectory(fullPath);
+                            Directory.CreateDirectory(destinationPath);
                             continue;
                         }
 
-                        // Đảm bảo thư mục tồn tại
-                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                        // Tạo thư mục cha nếu chưa có
+                        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
 
-                        // Ghi đè file
+                        // Nếu file tồn tại -> xóa trước
+                        if (File.Exists(destinationPath))
+                            File.Delete(destinationPath);
+
+                        // Ghi file
                         using (var entryStream = entry.Open())
-                        using (var fileStream = File.Create(fullPath))
+                        using (var fileStream = File.Create(destinationPath))
                         {
                             entryStream.CopyTo(fileStream);
                         }
                     }
                 }
+
+                // Xóa file zip
+                File.Delete(zipPath);
+
+                // Khởi động lại ứng dụng
+                Process.Start(targetExe);
             }
             catch (Exception ex)
             {
-                File.WriteAllText(Path.Combine(targetFolder, "update_error.txt"), ex.ToString());
+                MessageBox.Show("Lỗi cập nhật: " + ex.Message);
             }
-
-            // Chạy lại app
-            try
-            {
-                Process.Start(mainExe);
-            }
-            catch { }
-
-            // Thoát
         }
     }
 }
