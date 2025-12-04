@@ -76,7 +76,7 @@ namespace ExportData
 
                             string updater = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Updater.exe");
                             Process.Start(updater, $"\"{tempZip}\" \"{Application.ExecutablePath}\"");
-                            Environment.Exit(0);
+                            Application.Exit();
                         }
                     }
                 }
@@ -93,7 +93,7 @@ namespace ExportData
             {
                 InitializeComponent();
                 var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                this.Text = $"Export Data v{currentVersion} mới tinh luôn";
+                this.Text = $"Export Data v{currentVersion}";
             }
             catch (Exception)
             {
