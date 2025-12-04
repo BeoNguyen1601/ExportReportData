@@ -586,6 +586,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A05CDB6785A9FF94180A431588728B59"
+        "OwnerKey" = "8:_BBF832CA9BB9476992C1C6C228077375"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A05CDB6785A9FF94180A431588728B59"
         "OwnerKey" = "8:_6B0E656935BF4EB1B703E74C20B2A8B7"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2563,15 +2569,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Export Excel"
-        "ProductCode" = "8:{C7CA49AA-C369-46A2-BB74-375B619E3FED}"
-        "PackageCode" = "8:{23402B59-EC6B-4AC9-8B93-25A7D7A53944}"
+        "ProductCode" = "8:{C6B78973-1C0F-4217-94F2-6B731BB41AA5}"
+        "PackageCode" = "8:{6AAC5B0D-66C3-4406-8DFE-032D5526C789}"
         "UpgradeCode" = "8:{BBEFA7B2-00F4-450A-8D9C-890DADD5591C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.0.3"
         "Manufacturer" = "8:TuanNguyen"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -3099,7 +3105,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1D47465B05AB4D2AB9B4BDB84CA12C7A"
             {
-            "SourcePath" = "8:..\\ExportData\\obj\\Debug\\ExportData.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_252A2A0B30D746D08A67594E8DDE5217"
@@ -3127,7 +3133,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6B0E656935BF4EB1B703E74C20B2A8B7"
             {
-            "SourcePath" = "8:..\\ExportData\\obj\\Debug\\ExportData.exe"
+            "SourcePath" = "8:..\\ExportData\\obj\\Release\\ExportData.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1E9F492FEBC46D2AF0685F0C7EC574D"
