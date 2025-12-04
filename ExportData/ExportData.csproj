@@ -279,6 +279,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icon\icon-excel.ico" />
     <Content Include="Templates\TemplatesController.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
