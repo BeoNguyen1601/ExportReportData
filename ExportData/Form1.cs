@@ -56,6 +56,9 @@ namespace ExportData
 
                     var release = JObject.Parse(json);
                     var latestVersion = release["tag_name"].ToString();
+
+                    if (string.IsNullOrWhiteSpace(latestVersion)) return;
+
                     var assets = release["assets"] as JArray;
                     var downloadUrl = assets?[0]?["browser_download_url"]?.ToString();
 
