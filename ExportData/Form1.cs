@@ -104,12 +104,15 @@ namespace ExportData
                             Directory.Delete(extractFolder, true);
                         ZipFile.ExtractToDirectory(zipPath, extractFolder);
 
-                        string appFolder = AppDomain.CurrentDomain.BaseDirectory;
-                        string exeName = Path.GetFileName(Application.ExecutablePath);
-                        string currentExe = Path.Combine(appFolder, exeName);
+                        string currentExe = Application.ExecutablePath;
+                        string exeName = Path.GetFileName(currentExe);
+                        string appFolder = Path.GetDirectoryName(currentExe);
                         string oldExe = currentExe + ".oldExport";
 
                         // ĐỔI TÊN EXE ĐANG CHẠY
+                        if (File.Exists(oldExe))
+                            File.Delete(oldExe);
+
                         File.Move(currentExe, oldExe);
 
                         // COPY TẤT CẢ FILE TỪ UPDATE VÀO FOLDER APP
