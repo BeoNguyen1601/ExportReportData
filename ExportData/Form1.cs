@@ -96,7 +96,7 @@ namespace ExportData
             {
                 InitializeComponent();
                 var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                this.Text = $"Export Data v{currentVersion}";
+                this.Text = $"Export Data (cận final v{currentVersion})";
             }
             catch (Exception)
             {
