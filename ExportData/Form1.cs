@@ -76,7 +76,7 @@ namespace ExportData
 
                             string updater = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Updater.exe");
                             Process.Start(updater, $"\"{tempZip}\" \"{Application.ExecutablePath}\"");
-                            Application.Exit();
+                            Environment.Exit(0);
                         }
                     }
                 }
