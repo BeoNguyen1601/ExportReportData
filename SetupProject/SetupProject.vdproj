@@ -2569,7 +2569,7 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Export Data"
-        "ProductCode" = "8:{1EC51C8C-7376-47C9-A3CB-D245CB959072}"
+        "ProductCode" = "8:{80320914-FE1F-4057-A04B-2274286A6FBB}"
         "PackageCode" = "8:{07EECD08-9482-4099-BD63-6802A69C8191}"
         "UpgradeCode" = "8:{BBEFA7B2-00F4-450A-8D9C-890DADD5591C}"
         "AspNetVersion" = "8:4.0.30319.0"
