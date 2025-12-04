@@ -11,6 +11,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -78,16 +79,62 @@ namespace ExportData
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Information);
 
-                        if (dr == DialogResult.Yes)
-                        {
-                            Process.Start(new ProcessStartInfo
-                            {
-                                FileName = downloadUrl,
-                                UseShellExecute = true
-                            });
+                        //if (dr == DialogResult.Yes)
+                        //{
+                        //    Process.Start(new ProcessStartInfo
+                        //    {
+                        //        FileName = downloadUrl,
+                        //        UseShellExecute = true
+                        //    });
 
-                            Application.Exit();
+                        //    Application.Exit();
+                        //}
+
+                        if (dr != DialogResult.Yes) return;
+
+                        string zipPath = Path.Combine(Path.GetTempPath(), "update.zip");
+                        string extractFolder = Path.Combine(Path.GetTempPath(), "update_extract");
+
+                        // TẢI FILE ZIP
+                        var data = await client.GetByteArrayAsync(downloadUrl);
+                        File.WriteAllBytes(zipPath, data);
+
+                        // GIẢI NÉN VÀO FOLDER TEMP
+                        if (Directory.Exists(extractFolder))
+                            Directory.Delete(extractFolder, true);
+                        ZipFile.ExtractToDirectory(zipPath, extractFolder);
+
+                        string appFolder = AppDomain.CurrentDomain.BaseDirectory;
+                        string exeName = Path.GetFileName(Application.ExecutablePath);
+                        string currentExe = Path.Combine(appFolder, exeName);
+                        string oldExe = currentExe + ".oldExport";
+
+                        // ĐỔI TÊN EXE ĐANG CHẠY
+                        File.Move(currentExe, oldExe);
+
+                        // COPY TẤT CẢ FILE TỪ UPDATE VÀO FOLDER APP
+                        foreach (var file in Directory.GetFiles(extractFolder, "*", SearchOption.AllDirectories))
+                        {
+                            string relative = file.Substring(extractFolder.Length + 1);
+                            string dest = Path.Combine(appFolder, relative);
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(dest));
+                            File.Copy(file, dest, true);
                         }
+
+                        // XÓA ZIP VÀ FOLDER TMP
+                        try { File.Delete(zipPath); } catch { }
+                        try { Directory.Delete(extractFolder, true); } catch { }
+
+                        // MỞ LẠI APP SAU KHI UPDATE
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = currentExe,
+                            UseShellExecute = true
+                        });
+
+                        // THOÁT APP CŨ
+                        Application.Exit();
                     }
                 }
             }

@@ -850,19 +850,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C8EA1FDC4044807FC1991E023937F789"
+        "OwnerKey" = "8:_1D47465B05AB4D2AB9B4BDB84CA12C7A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6B0E656935BF4EB1B703E74C20B2A8B7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1D47465B05AB4D2AB9B4BDB84CA12C7A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1061,6 +1055,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6DB553CC8389A629326F8C6F61D056E7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C8EA1FDC4044807FC1991E023937F789"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -2514,15 +2514,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Export Excel"
-        "ProductCode" = "8:{4D176D9A-4E7B-4E5E-88C6-F12F37D721DE}"
-        "PackageCode" = "8:{FFDFA4BB-9D5C-4818-B6B1-7D1C9FDABA7D}"
+        "ProductCode" = "8:{D99FD384-D9AA-4A74-9676-DD015C0A7E2E}"
+        "PackageCode" = "8:{8F750D42-BC39-4FD5-B4B4-4288FAB3C6FC}"
         "UpgradeCode" = "8:{BBEFA7B2-00F4-450A-8D9C-890DADD5591C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.8"
+        "ProductVersion" = "8:1.1.0"
         "Manufacturer" = "8:TuanNguyen"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -3050,7 +3050,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1D47465B05AB4D2AB9B4BDB84CA12C7A"
             {
-            "SourcePath" = "8:..\\ExportData\\obj\\Debug\\ExportData.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_252A2A0B30D746D08A67594E8DDE5217"
@@ -3078,7 +3078,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6B0E656935BF4EB1B703E74C20B2A8B7"
             {
-            "SourcePath" = "8:..\\ExportData\\obj\\Debug\\ExportData.exe"
+            "SourcePath" = "8:..\\ExportData\\obj\\Release\\ExportData.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C1E9F492FEBC46D2AF0685F0C7EC574D"
