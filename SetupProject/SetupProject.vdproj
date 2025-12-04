@@ -2569,15 +2569,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Export Excel"
-        "ProductCode" = "8:{C6B78973-1C0F-4217-94F2-6B731BB41AA5}"
-        "PackageCode" = "8:{6AAC5B0D-66C3-4406-8DFE-032D5526C789}"
+        "ProductCode" = "8:{4FBA4A57-8C2D-4770-A6EE-80771A802CB0}"
+        "PackageCode" = "8:{C08EDAC5-3B44-4DEF-9EFE-213AF3E8CB1A}"
         "UpgradeCode" = "8:{BBEFA7B2-00F4-450A-8D9C-890DADD5591C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.3"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:TuanNguyen"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -3105,7 +3105,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1D47465B05AB4D2AB9B4BDB84CA12C7A"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\ExportData\\obj\\Release\\ExportData.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_252A2A0B30D746D08A67594E8DDE5217"

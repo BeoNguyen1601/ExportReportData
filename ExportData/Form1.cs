@@ -64,7 +64,7 @@ namespace ExportData
 
                     if (newVersion > currentVersion && !string.IsNullOrEmpty(downloadUrl))
                     {
-                        if (MessageBox.Show($"Phiên bản hiện tại ({currentVersion})\nBạn có muốn cập nhật lên {newVersion} không?", "Cập nhật", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                        if (MessageBox.Show($"Phiên bản hiện tại {currentVersion}\nBạn có muốn cập nhật lên {newVersion} không?", "Cập nhật", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                         {
                             string tempZip = Path.Combine(Path.GetTempPath(), "update.zip");
 
@@ -93,7 +93,7 @@ namespace ExportData
             {
                 InitializeComponent();
                 var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                this.Text = $"Export Data v{currentVersion}";
+                this.Text = $"Export Data v{currentVersion} mới nha";
             }
             catch (Exception)
             {
