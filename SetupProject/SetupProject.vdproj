@@ -2569,8 +2569,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Export Excel"
-        "ProductCode" = "8:{BAA2D80E-6F9C-4201-89A8-BAC056A04B94}"
-        "PackageCode" = "8:{5948DA6E-5DBD-44D7-8986-47C68A74525E}"
+        "ProductCode" = "8:{1EC51C8C-7376-47C9-A3CB-D245CB959072}"
+        "PackageCode" = "8:{567ED066-165A-4FB6-B32F-1BA5E2A83DF1}"
         "UpgradeCode" = "8:{BBEFA7B2-00F4-450A-8D9C-890DADD5591C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
