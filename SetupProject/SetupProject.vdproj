@@ -2094,7 +2094,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Updater, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Updater, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_BBF832CA9BB9476992C1C6C228077375"
@@ -2569,8 +2569,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Export Excel"
-        "ProductCode" = "8:{CAEBCB95-549A-4AA0-9A89-6031C238CF83}"
-        "PackageCode" = "8:{75A128C5-1AE7-4716-ACB3-3BA9D61D8498}"
+        "ProductCode" = "8:{C29BEB8F-F99C-411F-A2C0-4106CEA89802}"
+        "PackageCode" = "8:{FEBF8D11-C8CF-47C0-A7D1-4E8B21566FF3}"
         "UpgradeCode" = "8:{BBEFA7B2-00F4-450A-8D9C-890DADD5591C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
